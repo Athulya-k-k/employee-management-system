@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="nav-container">
+            <div class="nav-brand">Employee Management</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" onclick="showDashboard()">Dashboard</a>
+                <a href="#" class="nav-link" onclick="showForms()">Forms</a>
+                <a href="#" class="nav-link" onclick="showEmployees()">Employees</a>
+                <a href="#" class="nav-link" onclick="showProfile()">Profile</a>
+                <a href="#" class="nav-link" onclick="logout()">Logout</a>
+            </div>
+            <div class="nav-user" id="navUser"></div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>Login</h2>
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <p class="auth-switch">Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="registerPage" class="page">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>Register</h2>
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="regPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="regPassword2" required>
+                        </div>
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="regFirstName">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="regLastName">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" id="regPhone">
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="regAddress"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <h1>Dashboard</h1>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalForms">0</h3>
+                    <p>Total Forms</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalEmployees">0</h3>
+                    <p>Total Employees</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forms Page -->
+        <div id="formsPage" class="page">
+            <div class="page-header">
+                <h1>Dynamic Forms</h1>
+                <button class="btn btn-primary" onclick="showCreateFormModal()">Create New Form</button>
+            </div>
+            <div id="formsContainer" class="forms-grid"></div>
+        </div>
+
+        <!-- Employees Page -->
+        <div id="employeesPage" class="page">
+            <div class="page-header">
+                <h1>Employees</h1>
+                <button class="btn btn-primary" onclick="showCreateEmployeeModal()">Add Employee</button>
+            </div>
+            <div class="filters">
+                <input type="text" id="employeeSearch" placeholder="Search employees..." onkeyup="searchEmployees()">
+                <select id="formFilter" onchange="filterEmployees()">
+                    <option value="">All Forms</option>
+                </select>
+            </div>
+            <div id="employeesContainer" class="employees-table"></div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profilePage" class="page">
+            <h1>Profile</h1>
+            <div class="profile-container">
+                <form id="profileForm" onsubmit="handleUpdateProfile(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="profileUsername" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="profileEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="profileFirstName">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="profileLastName">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="profilePhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="profileAddress"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+
+                <div class="change-password-section">
+                    <h2>Change Password</h2>
+                    <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                        <div class="form-group">
+                            <label>Old Password</label>
+                            <input type="password" id="oldPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="newPassword2" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Form Modal -->
+    <div id="createFormModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateFormModal()">&times;</span>
+            <h2 id="formModalTitle">Create Dynamic Form</h2>
+            <form id="createFormForm" onsubmit="handleCreateForm(event)">
+                <div class="form-group">
+                    <label>Form Name</label>
+                    <input type="text" id="formName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="formDescription"></textarea>
+                </div>
+                <div class="form-fields-section">
+                    <h3>Form Fields</h3>
+                    <div id="formFieldsContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addFormField()">Add Field</button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateFormModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Form</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Employee Modal -->
+    <div id="createEmployeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateEmployeeModal()">&times;</span>
+            <h2 id="employeeModalTitle">Add Employee</h2>
+            <div class="form-group">
+                <label>Select Form</label>
+                <select id="employeeFormSelect" onchange="loadEmployeeForm()"></select>
+            </div>
+            <form id="createEmployeeForm" onsubmit="handleCreateEmployee(event)">
+                <div id="employeeFormFields"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateEmployeeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/forms.js"></script>
+    <script src="/static/js/employees.js"></script>
+</body>
+</html>

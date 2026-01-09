@@ -1,0 +1,517 @@
+{
+	"info": {
+		"name": "Employee Management System API",
+		"description": "Complete API collection for Employee Management System with Django REST Framework",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"TestPass123!\",\n    \"password2\": \"TestPass123!\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"User\",\n    \"phone\": \"1234567890\",\n    \"address\": \"123 Test Street\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "register", ""]
+						},
+						"description": "Register a new user account"
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access) {",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"}",
+									"if (jsonData.refresh) {",
+									"    pm.environment.set(\"refresh_token\", jsonData.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"TestPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "login", ""]
+						},
+						"description": "Login and get access/refresh tokens"
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access) {",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/token/refresh/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "token", "refresh", ""]
+						},
+						"description": "Refresh access token using refresh token"
+					}
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile", ""]
+						},
+						"description": "Get current user profile"
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"newemail@example.com\",\n    \"first_name\": \"Updated\",\n    \"last_name\": \"Name\",\n    \"phone\": \"9876543210\",\n    \"address\": \"456 New Address\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/profile/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile", ""]
+						},
+						"description": "Update user profile (partial update)"
+					}
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"TestPass123!\",\n    \"new_password\": \"NewPass123!\",\n    \"new_password2\": \"NewPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/change-password/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "change-password", ""]
+						},
+						"description": "Change user password"
+					}
+				}
+			]
+		},
+		{
+			"name": "Forms",
+			"item": [
+				{
+					"name": "List All Forms",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/forms/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "forms", ""]
+						},
+						"description": "Get all dynamic forms"
+					}
+				},
+				{
+					"name": "Get Form by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/forms/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "forms", "1", ""]
+						},
+						"description": "Get a specific form by ID"
+					}
+				},
+				{
+					"name": "Create Form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Employee Information Form\",\n    \"description\": \"Basic employee details collection form\",\n    \"fields\": [\n        {\n            \"label\": \"Full Name\",\n            \"field_type\": \"text\",\n            \"is_required\": true,\n            \"placeholder\": \"Enter full name\",\n            \"order\": 0\n        },\n        {\n            \"label\": \"Email\",\n            \"field_type\": \"email\",\n            \"is_required\": true,\n            \"placeholder\": \"employee@example.com\",\n            \"order\": 1\n        },\n        {\n            \"label\": \"Age\",\n            \"field_type\": \"number\",\n            \"is_required\": false,\n            \"placeholder\": \"Enter age\",\n            \"order\": 2\n        },\n        {\n            \"label\": \"Department\",\n            \"field_type\": \"select\",\n            \"is_required\": true,\n            \"options\": [\"IT\", \"HR\", \"Finance\", \"Marketing\"],\n            \"order\": 3\n        },\n        {\n            \"label\": \"Employment Type\",\n            \"field_type\": \"radio\",\n            \"is_required\": true,\n            \"options\": [\"Full-time\", \"Part-time\", \"Contract\"],\n            \"order\": 4\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/employees/forms/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "forms", ""]
+						},
+						"description": "Create a new dynamic form with fields"
+					}
+				},
+				{
+					"name": "Update Form",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Employee Form\",\n    \"description\": \"Updated description\",\n    \"fields\": [\n        {\n            \"label\": \"Full Name\",\n            \"field_type\": \"text\",\n            \"is_required\": true,\n            \"order\": 0\n        },\n        {\n            \"label\": \"Email\",\n            \"field_type\": \"email\",\n            \"is_required\": true,\n            \"order\": 1\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/employees/forms/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "forms", "1", ""]
+						},
+						"description": "Update an existing form"
+					}
+				},
+				{
+					"name": "Delete Form",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/forms/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "forms", "1", ""]
+						},
+						"description": "Delete a form (and all associated employees)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "List All Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", ""]
+						},
+						"description": "Get all employee records"
+					}
+				},
+				{
+					"name": "Search Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/?search=john",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", ""],
+							"query": [
+								{
+									"key": "search",
+									"value": "john"
+								}
+							]
+						},
+						"description": "Search employees by any field value"
+					}
+				},
+				{
+					"name": "Filter by Form",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/?form_id=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", ""],
+							"query": [
+								{
+									"key": "form_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Filter employees by form ID"
+					}
+				},
+				{
+					"name": "Get Employee by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", "1", ""]
+						},
+						"description": "Get a specific employee by ID"
+					}
+				},
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form\": 1,\n    \"data\": {\n        \"Full Name\": \"John Doe\",\n        \"Email\": \"john.doe@example.com\",\n        \"Age\": \"30\",\n        \"Department\": \"IT\",\n        \"Employment Type\": \"Full-time\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", ""]
+						},
+						"description": "Create a new employee record"
+					}
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"form\": 1,\n    \"data\": {\n        \"Full Name\": \"John Updated Doe\",\n        \"Email\": \"john.updated@example.com\",\n        \"Age\": \"31\",\n        \"Department\": \"HR\",\n        \"Employment Type\": \"Full-time\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", "1", ""]
+						},
+						"description": "Update an existing employee record"
+					}
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", "1", ""]
+						},
+						"description": "Delete an employee record"
+					}
+				},
+				{
+					"name": "Bulk Delete Employees",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ids\": [1, 2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/bulk_delete/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", "bulk_delete", ""]
+						},
+						"description": "Delete multiple employees at once"
+					}
+				},
+				{
+					"name": "Get Search Fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/employees/records/search_fields/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "employees", "records", "search_fields", ""]
+						},
+						"description": "Get all available fields for searching"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
